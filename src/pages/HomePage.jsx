@@ -1,11 +1,9 @@
-import React, { Suspense, lazy, useEffect, useState } from 'react';
-import { Link, Route, Routes } from 'react-router-dom';
+import React, {  useEffect, useState } from 'react';
+import { Link, } from 'react-router-dom';
 
 import { trendingWeekQuery } from '../components/services/Api';
 
-const MovieDetailsPage = lazy(() =>
-  import('../pages/MovieDetailPage')
-);
+
 
 const HomePage = () => {
   const [movies, setMovies] = useState([]);
