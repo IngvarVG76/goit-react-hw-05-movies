@@ -21,7 +21,7 @@ export const trendingWeekQuery = async () => {
   }
 };
 
-export const SearchQuery = async query => {
+export const searchMovies = async query => {
   try {
     const response = await axios.get(
       'https://api.themoviedb.org/3/search/movie',
@@ -70,7 +70,7 @@ export const getMovieDetails = async movieId => {
       `https://api.themoviedb.org/3/movie/${movieId}`,
       options
     );
-    console.log(response.data);
+    // console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(error);
