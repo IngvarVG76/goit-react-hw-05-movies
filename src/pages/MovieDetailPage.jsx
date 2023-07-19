@@ -46,7 +46,7 @@ const MovieDetailsPage = () => {
 
   return (
     <Main>
-      <BackLink to={backLink.current}>Go back</BackLink>
+      <BackLink to={backLink.current}>← Go back</BackLink>
       <MovieDetails>
         <img
           src={
