@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useSearchParams, useLocation } from 'react-router-dom';
+import { useLocation, useSearchParams, Outlet } from 'react-router-dom';
+import { Suspense, lazy } from 'react';
+
+import { Main } from "./MoviesPage.styled";
 import { searchMovies } from '../components/services/Api';
+
+import SearchForm from '../components/SearchForm/SearchForm';
+const MoviesList = lazy(() => import('../components/MoviesList/MoviesList'));
 
 const MoviesPage = () => {
   const [movies, setMovies] = useState([]);
-  const [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const searchName = searchParams.get('name') ?? '';
 
-  const updateQueryString = name => {
-    const nextParams = name !== '' ? { name } : {};
-    setSearchParams(nextParams);
-  };
-
   useEffect(() => {
-    if (!searchName) return;
     const getSearchResults = async () => {
       try {
         const response = await searchMovies(searchName);
@@ -24,40 +24,33 @@ const MoviesPage = () => {
       }
     };
     getSearchResults();
-  });
+  }, [searchName]);
 
-  const handleSearchSubmit = event => {
-    event.preventDefault();
-    const searchValue = searchName;
+  const updateQueryString = name => {
+    const nextParams = name.trim() !== '' ? { name } : {};
+    setSearchParams(nextParams);
+  };
+
+  const handleSearchSubmit = searchValue => {
     setSearchParams({ name: searchValue });
   };
 
   return (
-    <div>
-      <form onSubmit={handleSearchSubmit}>
-        <input
-          type="text"
-          placeholder="Search movies..."
-          value={searchName}
-          onChange={e => updateQueryString(e.target.value)}
+    <Main>
+      <SearchForm
+        onSubmit={handleSearchSubmit}
+        value={searchName}
+        onChange={updateQueryString}
+      />
+      <Suspense fallback={<p>Loading...</p>}>
+        <MoviesList
+          movies={movies}
+          location={location}
+          searchName={searchName}
         />
-        <button type="submit">Search</button>
-      </form>
-
-      {movies.length === 0 ? (
-        <p>No movies found.</p>
-      ) : (
-        <ul>
-          {movies.map(movie => (
-            <li key={movie.id}>
-              <Link to={`/movies/${movie.id}`} state={{ from: location }}>
-                {movie.title}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+        <Outlet />
+      </Suspense>
+    </Main>
   );
 };
 

@@ -1,13 +1,25 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useParams, Outlet } from 'react-router-dom';
+import { Suspense } from 'react';
+
+import {
+  Main,
+  BackLink,
+  MovieDetails,
+  Overview,
+  GenresList,
+  AdditionalInfo,
+} from './MovieDetailPage.styled';
 
 import { getMovieDetails } from '../components/services/Api';
+
+const defaultImg = 'https://www.tgv.com.my/assets/images/404/movie-poster.jpg';
 
 const MovieDetailsPage = () => {
   const [movie, setMovie] = useState(null);
   const { movieId } = useParams();
   const location = useLocation();
-  const backLinkHref = useRef(location.state?.from ?? "/");
+  const backLink = useRef(location.state?.from ?? '/');
 
   useEffect(() => {
     if (!movieId) return;
@@ -16,7 +28,6 @@ const MovieDetailsPage = () => {
       try {
         const movieData = await getMovieDetails(movieId);
         setMovie(movieData);
-        console.log(movieData);
       } catch (error) {
         console.error(error);
       } finally {
@@ -34,33 +45,43 @@ const MovieDetailsPage = () => {
     movie;
 
   return (
-    <div>
-      <Link to={backLinkHref.current}>Go back</Link>
-      <div>
+    <Main>
+      <BackLink to={backLink.current}>Go back</BackLink>
+      <MovieDetails>
         <img
-          src={`https://image.tmdb.org/t/p/w500/${poster_path}`}
+          src={
+            poster_path
+              ? `https://image.tmdb.org/t/p/w500/${poster_path}`
+              : defaultImg
+          }
           alt={title}
         />
-        <h1>{`${title} (${release_date.substring(0, 4)})`}</h1>
-        <p>User score: {Math.round(vote_average * 10)}%</p>
-        <h2>Overview</h2>
-        <p>{overview}</p>
-        <h2>Genres</h2>
-        <p>{genres.map(genre => genre.name).join(', ')}</p>
-      </div>
+        <div>
+          <h1>{`${title} (${release_date.substring(0, 4)})`}</h1>
+          <p>User score: {Math.round(vote_average * 10)}%</p>
+          <Overview>{overview}</Overview>
+          <GenresList>
+            {genres.map(genre => (
+              <li key={genre.id}>{genre.name}</li>
+            ))}
+          </GenresList>
+        </div>
+      </MovieDetails>
       <div>
         <h2>Additional information</h2>
-        <ul>
+        <AdditionalInfo>
           <li>
             <Link to="cast">Cast</Link>
           </li>
           <li>
             <Link to="reviews">Reviews</Link>
           </li>
-        </ul>
-        <Outlet />
+        </AdditionalInfo>
+        <Suspense fallback={<p>Loading...</p>}>
+          <Outlet />
+        </Suspense>
       </div>
-    </div>
+    </Main>
   );
 };
 

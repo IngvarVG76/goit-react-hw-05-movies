@@ -2,6 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { format } from 'date-fns';
 
+import {
+  ReviewList,
+  ReviewItem,
+  Author,
+  ReviewContent,
+  ReviewDate,
+} from './Reviews.styled';
 import { getMovieReviews } from '../services/Api';
 
 const Reviews = () => {
@@ -15,7 +22,6 @@ const Reviews = () => {
       try {
         const movieReviews = await getMovieReviews(movieId);
         setReviews(movieReviews.results);
-        console.log(movieReviews.results);
       } catch (error) {
         console.error(error);
       }
@@ -24,25 +30,27 @@ const Reviews = () => {
     fetchMovieReviews();
   }, [movieId]);
 
-  if (reviews.length === 0) {
-    return <div>Loading...</div>;
-  }
-
   const formatDate = datetime => {
     return format(new Date(datetime), 'yyyy.MM.dd HH:mm');
   };
 
+  if (reviews.length === 0) {
+    return <p>We don't have any reviews yet</p>;
+  }
+
   return (
-    <ul>
+    <ReviewList>
       {reviews.map(review => (
-        <li key={review.id}>
-          <h3>{review.author}</h3>
-          <p>{review.content}</p>
-          <p>Posted: {formatDate(review.created_at)}</p>
-        </li>
+        <ReviewItem key={review.id}>
+          <Author>{review.author}</Author>
+          <ReviewContent>{review.content}</ReviewContent>
+          <ReviewDate>Posted: {formatDate(review.created_at)}</ReviewDate>
+        </ReviewItem>
       ))}
-    </ul>
+    </ReviewList>
   );
 };
+
+// No props to validate
 
 export default Reviews;

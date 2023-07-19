@@ -1,20 +1,20 @@
-import React, {  useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Outlet } from 'react-router-dom';
+import { Suspense, lazy } from 'react';
 
+import { Main, Heading } from './HomePage.styled';
 import { trendingWeekQuery } from '../components/services/Api';
 
-
+const MoviesList = lazy(() => import('../components/MoviesList/MoviesList'));
 
 const HomePage = () => {
   const [movies, setMovies] = useState([]);
-  const location = useLocation();
 
   useEffect(() => {
     const fetchTrendingMovies = async () => {
       try {
         const response = await trendingWeekQuery();
-          setMovies(response.data.results);
-        //   console.log(response);
+        setMovies(response.data.results);
       } catch (error) {
         console.error(error);
       }
@@ -24,18 +24,13 @@ const HomePage = () => {
   }, []);
 
   return (
-    <div>
-      <h2>Trending Movies</h2>
-      <ul>
-        {movies.map(movie => (
-          <li key={movie.id}>
-            <Link to={`movies/${movie.id}`} state={{ from: location }}>
-              {movie.title}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <Main>
+      <Heading>Trending Movies</Heading>
+      <Suspense fallback={<p>Loading...</p>}>
+        <MoviesList movies={movies} />
+        <Outlet />
+      </Suspense>
+    </Main>
   );
 };
 

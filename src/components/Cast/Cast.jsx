@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-// import { format } from 'date-fns';
+import {
+  CastList,
+  CastItem,
+  ActorName,
+  ActorImage,
+  ActorCharacter,
+} from './Cast.styled';
 
 import { getMovieCredits } from '../services/Api';
+
+const defaultImg = 'https://www.tgv.com.my/assets/images/404/movie-poster.jpg';
 
 const Cast = () => {
   const [cast, setCast] = useState([]);
@@ -15,7 +23,6 @@ const Cast = () => {
       try {
         const movieCast = await getMovieCredits(movieId);
         setCast(movieCast.cast);
-        console.log(movieCast.cast);
       } catch (error) {
         console.error(error);
       }
@@ -25,24 +32,29 @@ const Cast = () => {
   }, [movieId]);
 
   if (cast.length === 0) {
-    return <div>Loading...</div>;
+    return <p>Cast currently not available</p>;
   }
 
-
   return (
-    <ul>
+    <CastList>
       {cast.map(actor => (
-        <li key={actor.id}>
-          <h3>Actor: {actor.name}</h3>
-          <img
-            src={`https://image.tmdb.org/t/p/w500/${actor.profile_path}`}
+        <CastItem key={actor.id}>
+          <ActorImage
+            src={
+              actor.profile_path
+                ? `https://image.tmdb.org/t/p/w500/${actor.profile_path}`
+                : defaultImg
+            }
             alt={actor.name}
           />
-          <p>As: {actor.character}</p>
-        </li>
+          <ActorName>{actor.name}</ActorName>
+          <ActorCharacter>As: {actor.character}</ActorCharacter>
+        </CastItem>
       ))}
-    </ul>
+    </CastList>
   );
 };
+
+// No props to validate
 
 export default Cast;

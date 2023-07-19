@@ -1,16 +1,20 @@
-import { Outlet, NavLink } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 
+import { Header, Nav, StyledNavLink } from "./SharedLayout.styled"
 
 export const SharedLayout = () => {
   return (
     <div>
-      <header>
-        <nav>
-          <NavLink to="/">Home</NavLink>
-          <NavLink to="/movies">Moovies</NavLink>
-        </nav>
-      </header>
+      <Header>
+        <Nav>
+          <StyledNavLink to="/">
+            Home
+          </StyledNavLink>
+          <StyledNavLink to="/movies">Movies</StyledNavLink>
+        </Nav>
+      </Header>
       <Outlet />
     </div>
   );
 };
+// No props to validate

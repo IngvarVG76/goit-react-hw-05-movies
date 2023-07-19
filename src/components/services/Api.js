@@ -70,7 +70,6 @@ export const getMovieDetails = async movieId => {
       `https://api.themoviedb.org/3/movie/${movieId}`,
       options
     );
-    // console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(error);
