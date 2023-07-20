@@ -11,7 +11,7 @@ import {
   AdditionalInfo,
 } from './MovieDetailPage.styled';
 
-import { getMovieDetails } from '../components/services/Api';
+import { getMovieDetails } from '../../components/services/Api';
 
 const defaultImg = 'https://www.tgv.com.my/assets/images/404/movie-poster.jpg';
 
@@ -46,7 +46,7 @@ const MovieDetailsPage = () => {
 
   return (
     <Main>
-      <BackLink to={backLink.current}>Go back</BackLink>
+      <BackLink to={backLink.current}>← Go back</BackLink>
       <MovieDetails>
         <img
           src={

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useSearchParams, Outlet } from 'react-router-dom';
-import { Suspense, lazy } from 'react';
+import { useLocation, useSearchParams } from 'react-router-dom';
 
-import { Main } from "./MoviesPage.styled";
-import { searchMovies } from '../components/services/Api';
+import { Main } from './MoviesPage.styled';
+import { searchMovies } from '../../components/services/Api';
 
-import SearchForm from '../components/SearchForm/SearchForm';
-const MoviesList = lazy(() => import('../components/MoviesList/MoviesList'));
+import SearchForm from '../../components/SearchForm/SearchForm';
+import MoviesList from '../../components/MoviesList/MoviesList';
 
 const MoviesPage = () => {
   const [movies, setMovies] = useState([]);
@@ -42,14 +41,11 @@ const MoviesPage = () => {
         value={searchName}
         onChange={updateQueryString}
       />
-      <Suspense fallback={<p>Loading...</p>}>
         <MoviesList
           movies={movies}
           location={location}
           searchName={searchName}
         />
-        <Outlet />
-      </Suspense>
     </Main>
   );
 };
